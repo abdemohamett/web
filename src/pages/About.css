@@ -1,0 +1,171 @@
+.about-page {
+  padding-top: 80px;
+}
+
+.about-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.inline-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background-color: var(--surface-container);
+  color: var(--primary);
+  border-radius: var(--radius-full);
+}
+
+.image-frame {
+  aspect-ratio: 4/5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Story */
+.story-grid {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: 64px;
+}
+
+.accent-line {
+  width: 64px;
+  height: 4px;
+  background-color: var(--primary);
+  border-radius: var(--radius-full);
+}
+
+/* Principles */
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.principle-card {
+  padding: 40px;
+  background-color: var(--surface-container-lowest);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--surface-container-high);
+}
+
+.principle-icon {
+  width: 48px;
+  height: 48px;
+  background-color: rgba(0, 74, 198, 0.1);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  margin-bottom: 32px;
+}
+
+/* Timeline */
+.container.narrow {
+  max-width: 800px;
+}
+
+.timeline-list {
+  position: relative;
+  border-left: 2px solid var(--surface-container);
+  padding-left: 40px;
+  margin-left: 20px;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 48px;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -49px;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  border: 4px solid var(--background);
+}
+
+.timeline-dot.grey {
+  background-color: var(--outline-variant);
+}
+
+.timeline-date {
+  color: var(--primary);
+}
+
+.timeline-date.secondary {
+  color: var(--on-surface-variant);
+}
+
+/* CTA Card */
+.cta-card {
+  padding: 64px;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-btns {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  position: relative;
+  z-index: 10;
+}
+
+.btn-white {
+  background-color: white;
+  color: var(--primary);
+  padding: 16px 40px;
+  border-radius: var(--radius-default);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.cta-blob {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.cta-blob.decor-1 { width: 256px; height: 256px; top: -128px; right: -128px; }
+.cta-blob.decor-2 { width: 128px; height: 128px; bottom: -64px; left: -64px; }
+
+@media (max-width: 992px) {
+  .about-hero-grid, .story-grid, .principles-grid { grid-template-columns: 1fr; }
+  .about-hero-grid { gap: 48px; }
+  .hero-text { order: 2; }
+  .hero-visual { order: 1; max-width: 500px; margin: 0 auto; }
+}
+
+@media (max-width: 768px) {
+  .cta-card { padding: 48px 24px; }
+  .cta-btns { flex-direction: column; width: 100%; }
+  .cta-btns button { width: 100%; }
+  
+  .timeline-list {
+    padding-left: 32px;
+    margin-left: 12px;
+  }
+  
+  .timeline-dot {
+    left: -41px;
+  }
+}
