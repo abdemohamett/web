@@ -22,10 +22,17 @@ export default function Footer() {
         });
 
         // Fetch social links
-        const { data: socialData } = await supabase
+        const { data: socialData, error: socialError } = await supabase
           .from('social_links')
           .select('*')
           .order('display_order', { ascending: true });
+        
+        console.log('Social links data:', socialData);
+        console.log('Social links error:', socialError);
+        
+        if (socialError) {
+          console.error('Error fetching social links:', socialError);
+        }
         setSocialLinks(socialData || []);
       } catch (error) {
         console.error('Error fetching footer data:', error);
@@ -50,7 +57,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {link.name}
+              {link.display_name}
             </a>
           )) : (
             <>

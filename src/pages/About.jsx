@@ -59,6 +59,13 @@ export default function About() {
               <img 
                 src={settings.about_profile_image || 'https://lh3.googleusercontent.com/aida-public/AB6AXuCE-n7xURPoyO53HTmsNKgvXOZQNbIh2b1T-Cyg_ARFfsH5iNr3CGiLj3GyjIkd6KA-IJxwAQacrI9yZwRVEp4yFbaIZDUZv4KEXlBNgOz6RK-nb8upG5H-RfBScs-1jZk-gEiaP6b5B4AlV7LwHUSY6tQG2cm_zDlHLTbqvo_yjpif6QRlMUFglYWoPilMKl6WTtSBXIKYSL8di8eMAXP1WnnWwc8mAlZ47BEvRpQl_DtfFiLXPeOd6MLdsAtAMapn00unh6FuRnE'} 
                 alt="About Portrait" 
+                loading="lazy"
+                decoding="async"
+                onLoad={(e) => e.target.classList.add('loaded')}
+                onError={(e) => {
+                  e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Crect width="400" height="400" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%239ca3af" font-family="sans-serif" font-size="14"%3EPhoto%3C/text%3E%3C/svg%3E';
+                  e.target.classList.add('error');
+                }}
               />
             </div>
           </div>

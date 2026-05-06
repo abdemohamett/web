@@ -60,7 +60,17 @@ export default function Work() {
           {projects.map((project) => (
             <div key={project.id} className={`project-card ${project.size} shadow-ambient hover-up`}>
               <div className="project-img">
-                <img src={project.image} alt={project.title} />
+                <img 
+                  src={project.image} 
+                  alt={project.title}
+                  loading="lazy"
+                  decoding="async"
+                  onLoad={(e) => e.target.classList.add('loaded')}
+                  onError={(e) => {
+                    e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225"%3E%3Crect width="400" height="225" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%239ca3af" font-family="sans-serif" font-size="14"%3EImage%3C/text%3E%3C/svg%3E';
+                    e.target.classList.add('error');
+                  }}
+                />
               </div>
               <div className="project-info">
                 <div className="project-tags">
