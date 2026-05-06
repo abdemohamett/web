@@ -38,11 +38,13 @@
   color: var(--primary);
 }
 
-/* Project Grid */
+/* Project Grid - Single column layout like mobile */
 .project-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 32px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .project-card {
@@ -54,19 +56,10 @@
   flex-direction: column;
 }
 
-.project-card.large {
-  grid-column: span 2;
-  flex-direction: row;
-}
-
+/* All cards now use vertical layout like mobile */
 .project-img {
   aspect-ratio: 16/9;
   overflow: hidden;
-}
-
-.project-card.large .project-img {
-  width: 60%;
-  aspect-ratio: auto;
 }
 
 .project-img img {
@@ -82,13 +75,6 @@
 
 .project-info {
   padding: 40px;
-}
-
-.project-card.large .project-info {
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .project-tags {
@@ -127,13 +113,8 @@
 }
 
 @media (max-width: 992px) {
-  .project-card, .project-card.large {
-    grid-column: span 2;
-    flex-direction: column;
-  }
-  
-  .project-card.large .project-img, .project-card.large .project-info {
-    width: 100%;
+  .project-grid {
+    max-width: none;
   }
   
   .filters-container {

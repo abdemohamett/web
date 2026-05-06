@@ -1,15 +1,39 @@
+import { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 import './Contact.css';
 
 export default function Contact() {
+  const [settings, setSettings] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data } = await supabase.from('site_settings').select('*');
+        const settingsMap = {};
+        data?.forEach(s => settingsMap[s.key] = s.value);
+        setSettings(settingsMap);
+      } catch (error) {
+        console.error('Error fetching contact settings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
+  if (loading) return <div className="loading">Loading...</div>;
+
   return (
     <div className="contact-page">
       <div className="container contact-container">
         {/* Hero Section */}
         <div className="contact-hero mb-20">
-          <span className="label-md text-primary block mb-4">AVAILABLE FOR NEW PROJECTS</span>
-          <h1 className="h1 mb-6">Let's build something great together.</h1>
+          <span className="label-md text-primary block mb-4">{settings.contact_availability_status || 'AVAILABLE FOR NEW PROJECTS'}</span>
+          <h1 className="h1 mb-6">{settings.contact_hero_title || "Let's build something great together."}</h1>
           <p className="body-lg text-on-surface-variant max-w-xl">
-            I'm currently looking for new opportunities and collaborations. Whether you have a specific project in mind or just want to say hi, my inbox is always open.
+            {settings.contact_hero_subtitle || "I'm currently looking for new opportunities and collaborations. Whether you have a specific project in mind or just want to say hi, my inbox is always open."}
           </p>
         </div>
 
@@ -21,14 +45,14 @@ export default function Contact() {
               <div className="info-icon shadow-ambient"><span className="material-symbols-outlined">mail</span></div>
               <div className="info-text">
                 <p className="label-md text-on-surface-variant mb-1">EMAIL ME</p>
-                <a href="mailto:hello@portfolio.com" className="h3 hover-link">hello@portfolio.com</a>
+                <a href={`mailto:${settings.contact_email || 'hello@portfolio.com'}`} className="h3 hover-link">{settings.contact_email || 'hello@portfolio.com'}</a>
               </div>
             </div>
             <div className="info-item mb-12">
               <div className="info-icon shadow-ambient"><span className="material-symbols-outlined">location_on</span></div>
               <div className="info-text">
                 <p className="label-md text-on-surface-variant mb-1">LOCATION</p>
-                <p className="h3">Germany</p>
+                <p className="h3">{settings.contact_location || 'Germany'}</p>
               </div>
             </div>
 
@@ -36,13 +60,13 @@ export default function Contact() {
               <div className="whatsapp-header mb-6">
                 <div className="whatsapp-icon"><span className="material-symbols-outlined">chat</span></div>
                 <div className="whatsapp-title">
-                  <h4 className="h3 small">Direct Chat</h4>
-                  <p className="body-md text-on-surface-variant">Get a faster response via WhatsApp</p>
+                  <h4 className="h3 small">{settings.contact_whatsapp_title || 'Direct Chat'}</h4>
+                  <p className="body-md text-on-surface-variant">{settings.contact_whatsapp_subtitle || 'Get a faster response via WhatsApp'}</p>
                 </div>
               </div>
-              <a href="#" className="whatsapp-btn">
+              <a href={settings.contact_whatsapp_link || '#'} className="whatsapp-btn">
                 <span className="material-symbols-outlined">forum</span>
-                <span>Message me on WhatsApp</span>
+                <span>{settings.contact_whatsapp_button_text || 'Message me on WhatsApp'}</span>
               </a>
             </div>
           </div>
@@ -76,7 +100,7 @@ export default function Contact() {
               <button type="submit" className="btn-primary w-full py-5">
                 Send Message <span className="material-symbols-outlined">send</span>
               </button>
-              <p className="form-note label-md">I usually respond within 24-48 business hours.</p>
+              <p className="form-note label-md">{settings.contact_response_time || 'I usually respond within 24-48 business hours.'}</p>
             </form>
           </div>
         </div>

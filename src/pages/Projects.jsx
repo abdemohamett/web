@@ -1,36 +1,33 @@
+import { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 import './Projects.css';
 
-const projects = [
-  {
-    id: 1,
-    title: 'Nexus Wealth Management',
-    category: 'FinTech',
-    subcategory: 'UI/UX Design',
-    description: 'Redefining digital asset management with a focus on institutional-grade security and intuitive performance tracking.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuArcIpc2fncbp9VmTAnLTqxOBOvb6AaA5AKnDMhUUTyBHPlwTW7v9k89r6F3JfzSSBnsWiWBnBVhNOUm-TCeJSO2GYjKrknJVr1BX9uhQvNcaasBi-rIpnJgGU1kQsrisuCP5bxxf6WQ9S_ry8q7YQ_sAiOq9KFRRTUOTWrrdUrqFNPvknJXzpU1Aa_scjTHn4VvIbMHJU3f6duUJWiDtmA-HF9_qG4YCKeW5nWITzTEQ-UvWKmMgWQfglD50vfUHAAMT9LkFAgTB4',
-    size: 'normal'
-  },
-  {
-    id: 2,
-    title: 'Vigor AI',
-    category: 'Healthcare',
-    subcategory: 'Artificial Intelligence',
-    description: 'An AI-driven diagnostic platform that streamlines patient data analysis for modern healthcare providers.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDOocsSC3_LIC7zel4DbpZCZ-rBZOGPK4bpRcePPwap-HuAJ1ZJj8gamom15qoWHCvFr6WbW-lVcqFQ86p4o9GrAa207HJ0Cf0-fKo4OL-z6vK7nVpWhoexa98eUUc2SCqeFC9DtBGGbYkbRKcjmQUBcED2mkuaIi1SNDid7pZheWJc7aFmhEYfIXA5QERE-rxhSrjcekKHVP4bPyD4C4_zMH6xrQO210O9hGAIRhRsseZMW0iQQK5ZjieyUt4ARyQSWyNO1mBqmvs',
-    size: 'normal'
-  },
-  {
-    id: 3,
-    title: 'CloudScale Systems',
-    category: 'SaaS',
-    subcategory: 'Architecture',
-    description: 'Scalable infrastructure monitoring for enterprise organizations, focusing on real-time data visibility and system health.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBdNfTl6NmyTK_o3NUxA646ZLF-LSul3ghNVuyaBE3js0n3Pt-ueuwVZkhW4aqb46uwG9tVQARyjeuGvYg_tBCkANgn3dhv6Ai7ZPDvgBrz0jHubrFfIvzVlEKFk59GrjJ40B_CunRA8qk0FYeXczhxoalEYGsuHkTLSPnSKH1k8dP85jhhISvT1HoqAokojZsG59pDaObkufQ-EPuywn6Zr0Kg-LgFJNVnJuHWKm0H9NWb-bUTmmO53I1w8gmX104hNtJs8KiE2Sg',
-    size: 'large'
-  }
-];
-
 export default function Projects() {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*')
+          .order('display_order', { ascending: true });
+
+        if (error) throw error;
+        setProjects(data || []);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  if (loading) return <div className="loading">Loading...</div>;
+
   return (
     <div className="projects-page">
       {/* Hero Section */}

@@ -1,7 +1,49 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 import './Home.css';
 
 export default function Home() {
+  const [settings, setSettings] = useState({});
+  const [services, setServices] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch site settings
+        const { data: settingsData } = await supabase.from('site_settings').select('*');
+        const settingsMap = {};
+        settingsData?.forEach(s => settingsMap[s.key] = s.value);
+        setSettings(settingsMap);
+
+        // Fetch services
+        const { data: servicesData } = await supabase
+          .from('services')
+          .select('*')
+          .order('display_order', { ascending: true });
+        setServices(servicesData || []);
+
+        // Fetch featured projects (first 3)
+        const { data: projectsData } = await supabase
+          .from('projects')
+          .select('*')
+          .order('display_order', { ascending: true })
+          .limit(3);
+        setProjects(projectsData || []);
+      } catch (error) {
+        console.error('Error fetching home data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <div className="loading">Loading...</div>;
+
   return (
     <div className="home-page">
       {/* Hero Section */}
@@ -12,10 +54,10 @@ export default function Home() {
             <span>AVAILABLE FOR NEW PROJECTS</span>
           </div>
           <h1 className="h1 hero-title">
-            I help people grow, create, and build <span className="text-primary">impactful work</span>
+            {settings.home_hero_title || 'I help people grow, create, and build impactful work'}
           </h1>
           <p className="body-lg hero-subtitle">
-            A multidisciplinary designer and strategist focused on building scalable digital solutions that bridge the gap between human needs and business goals.
+            {settings.home_hero_subtitle || 'A multidisciplinary designer focused on building digital solutions.'}
           </p>
           <div className="hero-actions">
             <Link to="/work" className="btn-primary">View My Work</Link>
@@ -30,30 +72,30 @@ export default function Home() {
           <div className="about-visual">
             <div className="image-wrapper shadow-ambient">
               <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPfBjzggWJyHNvz_Kk3xHGkAaFTcjB_PazInhiiYvQzSZdqkhZIfk6UqQP_DrOtgFqTmhoxTbbgEX0_x13BImz9NAKc2LbHWDaVqwc_bzM3vj_oCvvubXmTqagn2FiNspFALYDLYNQe_3zcU69xQbOj9nHCgKPk3qXehtQsk6YiyWsTneCxEy9O2ndDuqJn55e8FMGFYviaHEZPv1chN9N6KQq7Xj8Sv734o-cy1h652XINqybKGhrZGsxdAi-Eow_x0-4mGT2fmM" 
+                src={settings.home_profile_image || 'https://via.placeholder.com/400x500'} 
                 alt="Profile" 
               />
             </div>
             <div className="experience-badge shadow-ambient">
-              <div className="h3 text-primary">8+</div>
+              <div className="h3 text-primary">{settings.home_years_experience || '8+'}</div>
               <div className="label-md">Years Experience</div>
             </div>
           </div>
           <div className="about-text">
-            <h2 className="h2 mb-6">Built on a foundation of clarity and purpose.</h2>
+            <h2 className="h2 mb-6">{settings.home_about_title || 'Built on a foundation of clarity and purpose.'}</h2>
             <p className="body-md mb-6">
-              I believe that the best work happens at the intersection of rigorous logic and creative intuition. Over the last decade, I've partnered with startups and Fortune 500 companies to launch products that matter.
+              {settings.home_about_paragraph1 || 'I believe that the best work happens at the intersection of rigorous logic and creative intuition.'}
             </p>
             <p className="body-md mb-8">
-              My approach is deeply rooted in research, ensuring every pixel and every line of code serves a specific objective for your brand.
+              {settings.home_about_paragraph2 || 'My approach is deeply rooted in research, ensuring every pixel serves a specific objective.'}
             </p>
             <div className="stats-row">
               <div className="stat-item">
-                <div className="h3 text-primary">120+</div>
+                <div className="h3 text-primary">{settings.home_projects_completed || '120+'}</div>
                 <div className="label-md">Projects Completed</div>
               </div>
               <div className="stat-item">
-                <div className="h3 text-primary">98%</div>
+                <div className="h3 text-primary">{settings.home_client_satisfaction || '98%'}</div>
                 <div className="label-md">Client Satisfaction</div>
               </div>
             </div>
@@ -66,43 +108,38 @@ export default function Home() {
         <div className="container">
           <div className="section-header">
             <div className="header-text">
-              <h2 className="h2">Selected Work</h2>
-              <p className="body-md">A collection of projects that define my commitment to excellence and impact.</p>
+              <h2 className="h2">{settings.home_services_title || 'Selected Work'}</h2>
+              <p className="body-md">{settings.home_services_subtitle || 'A collection of projects that define my commitment to excellence.'}</p>
             </div>
-            <Link to="/work" className="view-all-link label-md">
+            <Link to="/projects" className="view-all-link label-md">
               View All Projects <span className="material-symbols-outlined">arrow_forward</span>
             </Link>
           </div>
           
           <div className="work-bento-grid">
-            <div className="bento-item featured shadow-ambient">
-              <div className="bento-img">
-                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQA88tH74HkaF7uIJg-_kInR0Iinw1wFVikA-2WU6DEmv7jyMBZssV8ET6C1nyGKaNNbS33H7nFFVXAKiqzrekcD8C6yJQh7VYRfNqHXfnH1QG6C2BnE7Jk4GdvXeKTSFVE9CQ4GMgQ1FqucmtG2v5hS6A4hL4pLZ4-nat9gNj_GXyr6tysSvlu24E6USOtkfZDC3evaz_xO2keNSsGEkyyH2khZIYEp3xeQ3xbkqZzUNI2kFOChiUIxqpxCw5ANue_dj2HBX0-G8" alt="Project 1" />
-              </div>
-              <div className="bento-content">
-                <div className="tags">
-                  <span className="tag">Fintech</span>
-                  <span className="tag">2023</span>
+            {projects.slice(0, 2).map((project, index) => (
+              <div key={project.id} className={`bento-item ${index === 0 ? 'featured' : 'compact'} shadow-ambient`}>
+                <div className={`bento-img ${index === 1 ? 'square' : ''}`}>
+                  <img src={project.image || 'https://via.placeholder.com/600x400'} alt={project.title} />
                 </div>
-                <h3 className="h3">Nexus Wealth Management</h3>
-                <p className="body-md">Complete redesign of a legacy financial platform, increasing user engagement by 45%.</p>
-                <Link to="/work" className="case-study-link label-md">
-                  View Case Study <span className="material-symbols-outlined">north_east</span>
-                </Link>
+                <div className="bento-content">
+                  <div className="tags">
+                    <span className="tag">{project.category}</span>
+                    {project.subcategory && <span className="tag">{project.subcategory}</span>}
+                  </div>
+                  <h3 className={`h3 ${index === 1 ? 'small' : ''}`}>{project.title}</h3>
+                  <p className="body-md">{project.description}</p>
+                  {index === 0 && (
+                    <Link to="/projects" className="case-study-link label-md">
+                      View Case Study <span className="material-symbols-outlined">north_east</span>
+                    </Link>
+                  )}
+                  {index === 1 && (
+                    <span className="material-symbols-outlined arrow">arrow_forward</span>
+                  )}
+                </div>
               </div>
-            </div>
-            
-            <div className="bento-item compact shadow-ambient">
-              <div className="bento-img square">
-                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZxa6l0vGn4ujUaUtYnjcpqx837Rqec8kWkAwUnmOKUJTRoskhl7eE8QKWIdzDE_WtyZbaKDTLwrB5Tvg3I4sfbCBrXOjxvH2M0_qgMD9Y6iSOWIqjB6AliS6odBDdFMmoI3NPKRlV3J-rntqnburox6hf4ZP18sd9mfmprV8wb0DYSBmRQBG5nW4w5AcHFnkCJhuoyaDAjIgh77clw3OS6Wf7umzxw2yjRwHviA2gnOCKMkTHTuMeFEQ4sXZlCsC2RktibDoQmZw" alt="Project 2" />
-              </div>
-              <div className="bento-content">
-                <span className="tag">Healthcare</span>
-                <h3 className="h3 small">Vigor AI</h3>
-                <p className="body-md">Personalized wellness tracking powered by machine learning.</p>
-                <span className="material-symbols-outlined arrow">arrow_forward</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -111,25 +148,19 @@ export default function Home() {
       <section className="services-section section-padding bg-inverse-surface text-inverse-on-surface">
         <div className="container">
           <div className="section-header center">
-            <h2 className="h2 mb-4">How I add value</h2>
-            <p className="body-md text-dim">Focused services designed to propel your business forward in the digital age.</p>
+            <h2 className="h2 mb-4">{settings.home_services_title || 'How I add value'}</h2>
+            <p className="body-md text-dim">{settings.home_services_subtitle || 'Focused services designed to propel your business forward.'}</p>
           </div>
           <div className="services-grid">
-            <div className="service-card">
-              <div className="service-icon"><span className="material-symbols-outlined">brush</span></div>
-              <h3 className="h3">Web Design</h3>
-              <p className="body-md">Creating intuitive, high-converting digital experiences that prioritize behavior and brand authority.</p>
-            </div>
-            <div className="service-card">
-              <div className="service-icon"><span className="material-symbols-outlined">psychology</span></div>
-              <h3 className="h3">AI Solutions</h3>
-              <p className="body-md">Integrating smart automation and machine learning models to streamline operations and enhance products.</p>
-            </div>
-            <div className="service-card">
-              <div className="service-icon"><span className="material-symbols-outlined">campaign</span></div>
-              <h3 className="h3">Content Creation</h3>
-              <p className="body-md">Strategic storytelling and brand messaging that builds trust and drives long-term community growth.</p>
-            </div>
+            {services.slice(0, 3).map((service) => (
+              <div key={service.id} className="service-card">
+                <div className="service-icon">
+                  <span className="material-symbols-outlined">{service.icon || 'star'}</span>
+                </div>
+                <h3 className="h3">{service.title}</h3>
+                <p className="body-md">{service.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -138,11 +169,15 @@ export default function Home() {
       <section className="final-cta section-padding">
         <div className="container">
           <div className="cta-box bg-primary text-on-primary shadow-ambient">
-            <h2 className="h1 mb-8">Let's work together</h2>
-            <p className="body-lg mb-12 opacity-80">Have a project in mind? Let's discuss how we can build something truly impactful for your brand.</p>
+            <h2 className="h1 mb-8">{settings.home_cta_title || "Let's work together"}</h2>
+            <p className="body-lg mb-12 opacity-80">{settings.home_cta_subtitle || 'Have a project in mind? Let\'s discuss how we can build something impactful.'}</p>
             <div className="cta-buttons">
-              <a href="mailto:hello@example.com" className="btn-secondary">Contact Me</a>
-              <button className="btn-outline-white">Book a Call</button>
+              <Link to="/contact" className="btn-secondary">
+                {settings.home_cta_button_text || 'Contact Me'}
+              </Link>
+              <Link to="/contact" className="btn-outline-white">
+                {settings.home_cta_secondary_button_text || 'Book a Call'}
+              </Link>
             </div>
             <div className="cta-decoration decor-1"></div>
             <div className="cta-decoration decor-2"></div>

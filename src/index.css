@@ -209,6 +209,7 @@ img {
   justify-content: center;
   gap: 8px;
   box-shadow: 0 4px 12px rgba(0, 74, 198, 0.2);
+  margin-top: 16px;
 }
 
 .btn-primary:hover {

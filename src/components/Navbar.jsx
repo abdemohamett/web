@@ -1,10 +1,32 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import './Navbar.css';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [brandName, setBrandName] = useState('Portfolio');
+  const [buttonText, setButtonText] = useState('Hire Me');
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from('site_settings')
+          .select('key, value')
+          .in('key', ['nav_brand_name', 'nav_button_text']);
+        
+        data?.forEach(setting => {
+          if (setting.key === 'nav_brand_name') setBrandName(setting.value || 'Portfolio');
+          if (setting.key === 'nav_button_text') setButtonText(setting.value || 'Hire Me');
+        });
+      } catch (error) {
+        console.error('Error fetching nav settings:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   // Close menu on route change
   useEffect(() => {
@@ -24,7 +46,7 @@ export default function Navbar() {
     <nav className="navbar glass-effect">
       <div className="container navbar-content">
         <Link to="/" className="navbar-brand">
-          Portfolio
+          {brandName}
         </Link>
         
         <button 
@@ -54,12 +76,12 @@ export default function Navbar() {
             Contact
           </NavLink>
           <Link to="/contact" className="btn-primary mobile-only-btn">
-            Hire Me
+            {buttonText}
           </Link>
         </div>
 
         <Link to="/contact" className="btn-primary hire-me-btn desktop-only">
-          Hire Me
+          {buttonText}
         </Link>
       </div>
     </nav>
