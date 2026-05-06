@@ -41,11 +41,14 @@ export default function Navbar() {
           <NavLink to="/" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
             Home
           </NavLink>
-          <NavLink to="/work" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-            Work
+          <NavLink to="/projects" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+            Projects
           </NavLink>
           <NavLink to="/about" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-            About
+            About Me
+          </NavLink>
+          <NavLink to="/skills" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+            Skills
           </NavLink>
           <NavLink to="/contact" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
             Contact
