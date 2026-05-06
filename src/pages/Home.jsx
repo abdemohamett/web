@@ -60,7 +60,7 @@ export default function Home() {
             {settings.home_hero_subtitle || 'A multidisciplinary designer focused on building digital solutions.'}
           </p>
           <div className="hero-actions">
-            <Link to="/work" className="btn-primary">View My Work</Link>
+            <Link to="/projects" className="btn-primary">View My Work</Link>
             <Link to="/contact" className="btn-secondary">Contact Me</Link>
           </div>
         </div>
